@@ -1,7 +1,7 @@
-package XyzCache
+package xyzcache
 
 import (
-	"XyzCache/lru"
+	"XyzCache/xyzcache/lru"
 	"sync"
 )
 

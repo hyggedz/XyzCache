@@ -45,13 +45,12 @@ func (c *Cache) Get(key string) (Value, bool) {
 }
 
 func (c *Cache) RemoveOldest() {
-	if c.ll != nil {
-		ele := c.ll.Back()
+	ele := c.ll.Back()
+	if ele != nil {
+		c.ll.Remove(ele)
 		kv := ele.Value.(*entry)
 		delete(c.cache, kv.key)
-		c.nbytes -= int64(kv.value.Len()) + int64(len(kv.key))
-		c.ll.Remove(ele)
-
+		c.nbytes -= int64(len(kv.key)) + int64(kv.value.Len())
 		if c.OnEvicted != nil {
 			c.OnEvicted(kv.key, kv.value)
 		}
@@ -66,12 +65,11 @@ func (c *Cache) Add(key string, value Value) {
 		c.nbytes += int64(value.Len()) - int64(kv.value.Len())
 		kv.value = value
 	} else {
-		ele := c.ll.PushFront(&entry{key: key, value: value})
+		ele := c.ll.PushFront(&entry{key, value})
 		c.cache[key] = ele
-		c.nbytes += int64(value.Len()) + int64(len(key))
+		c.nbytes += int64(len(key)) + int64(value.Len())
 	}
-
-	for c.maxBytes != 0 && c.nbytes > c.maxBytes {
+	for c.maxBytes != 0 && c.maxBytes < c.nbytes {
 		c.RemoveOldest()
 	}
 }

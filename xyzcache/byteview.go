@@ -1,4 +1,4 @@
-package XyzCache
+package xyzcache
 
 // ByteView only for read
 type ByteView struct {

@@ -1,4 +1,4 @@
-package XyzCache
+package xyzcache
 
 import (
 	"fmt"
